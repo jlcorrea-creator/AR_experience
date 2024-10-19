@@ -14,8 +14,8 @@
 
 
     <a-entity id="cone"
-              geometry="primitive: cone; radiusBottom: 0.5; height: 1.5;"
-              material="color: red;"
+              geometry="primitive: cone; radiusBottom: 0.5; height: 240;"
+              material="color: orange;"
               animation="property: rotation; to: 0 360 0; dur: 3000; loop: true; easing: linear"
               animation__bounce="property: position; to: 0 16 0; dir: alternate; dur: 1000; loop: true; easing: easeInOutQuad">
     </a-entity>
@@ -27,7 +27,7 @@
 
   <script>
     // Set fixed coordinates (for reference only)
-    const lat = 14.548807;
+    const lat = 14.548873;
     const lon = 121.006215;
 
 
@@ -56,7 +56,7 @@
 
       // Update the cone's position and rotation based on calculated values
       const coneEntity = document.getElementById('cone');
-      coneEntity.setAttribute('position', `${distance} 15 0`);
+      coneEntity.setAttribute('position', `${distance} 30 0`);
       coneEntity.setAttribute('rotation', `0 ${angle} 0`);
     }
 
