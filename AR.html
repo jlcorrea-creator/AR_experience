@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AR.js Location-Based Example</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { display: none; }
+  </style>
+</head>
+<body>
+  <a-scene embedded arjs="sourceType: webcam;">
+
+
+    <a-entity id="cone"
+              geometry="primitive: cone; radiusBottom: 0.5; height: 1.5;"
+              material="color: red;"
+              animation="property: rotation; to: 0 360 0; dur: 3000; loop: true; easing: linear"
+              animation__bounce="property: position; to: 0 16 0; dir: alternate; dur: 1000; loop: true; easing: easeInOutQuad">
+    </a-entity>
+
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+
+  <script>
+    // Set fixed coordinates (for reference only)
+    const lat = 14.548807;
+    const lon = 121.006215;
+
+
+    function checkLocationPermission() {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          successCallback,
+          errorCallback,
+          { enableHighAccuracy: true }
+        );
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
+
+
+    function successCallback(position) {
+      const userLatitude = position.coords.latitude;
+      const userLongitude = position.coords.longitude;
+
+
+      // Calculate distance and angle using the haversine formula and trigonometry (implementation omitted for brevity)
+      const distance = calculateDistance(userLatitude, userLongitude, lat, lon);
+      const angle = calculateAngle(userLatitude, userLongitude, lat, lon);
+
+
+      // Update the cone's position and rotation based on calculated values
+      const coneEntity = document.getElementById('cone');
+      coneEntity.setAttribute('position', `${distance} 15 0`);
+      coneEntity.setAttribute('rotation', `0 ${angle} 0`);
+    }
+
+
+    function errorCallback(error) {
+      alert('Error accessing location: ' + error.message);
+    }
+
+
+    function calculateDistance(userLat, userLon, targetLat, targetLon) {
+      // Implement the haversine formula here to calculate the distance
+      // between the user and the target coordinates. You can find code examples online.
+      // Return the calculated distance in meters.
+    }
+
+
+    function calculateAngle(userLat, userLon, targetLat, targetLon) {
+      // Implement trigonometry calculations here to determine the angle
+      // between the user's facing direction and the direction towards the target.
+      // Return the calculated angle in degrees.
+    }
+
+
+    checkLocationPermission();
+  </script>
+</body>
+</html>
