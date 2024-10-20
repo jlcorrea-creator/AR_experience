@@ -1,86 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AR.js Location-Based Example</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>AR.js Location-Based</title>
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-  <style>
-    body { margin: 0; }
-    canvas { display: none; }
-  </style>
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframre-look-at-component.min.js"></script>
+  <script src="https://raw.rawgithack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+
 </head>
-<body>
-  <a-scene embedded arjs="sourceType: webcam;">
 
+<body style="margin: 0; overflow: hidden;">
+  <a-scene
+       renderer="logarithmicDepthBuffer: true;"
+       embedded
+       loading-screen="enabled: false;"
+       arjs="sourceType: webcam; debugUIEnabled: false;"
+  >     
+       <a-assets>
+              <a-assest-item
+                   id="animated-asset"
+                   src="assets/asset.gltf"
+              ></a-asset-item>     
+      <a-assets>
+      <a-entity
+      look-at="(gps-camera)"
+      animation-mixer="loop: repeat"
+      scale="0.005410100359194308 0.005410100359194308 0.005410100359194308"
+      gps-entity-place="latitude: 14.549944; longitude: 121.006219;"
+     ></a-entity>
 
-    <a-entity id="cone"
-              geometry="primitive: cone; radiusBottom: 0.5; height: 240;"
-              material="color: orange;"
-              animation="property: rotation; to: 0 360 0; dur: 3000; loop: true; easing: linear"
-              animation__bounce="property: position; to: 0 16 0; dir: alternate; dur: 1000; loop: true; easing: easeInOutQuad">
-    </a-entity>
-
-
-    <a-entity camera></a-entity>
+     <a-camera gps-camera rotation-render></a-camera>
   </a-scene>
-
-
-  <script>
-    // Set fixed coordinates (for reference only)
-    const lat = 14.548873;
-    const lon = 121.006215;
-
-
-    function checkLocationPermission() {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          successCallback,
-          errorCallback,
-          { enableHighAccuracy: true }
-        );
-      } else {
-        alert('Geolocation is not supported by this browser.');
-      }
-    }
-
-
-    function successCallback(position) {
-      const userLatitude = position.coords.latitude;
-      const userLongitude = position.coords.longitude;
-
-
-      // Calculate distance and angle using the haversine formula and trigonometry (implementation omitted for brevity)
-      const distance = calculateDistance(userLatitude, userLongitude, lat, lon);
-      const angle = calculateAngle(userLatitude, userLongitude, lat, lon);
-
-
-      // Update the cone's position and rotation based on calculated values
-      const coneEntity = document.getElementById('cone');
-      coneEntity.setAttribute('position', `${distance} 30 0`);
-      coneEntity.setAttribute('rotation', `0 ${angle} 0`);
-    }
-
-
-    function errorCallback(error) {
-      alert('Error accessing location: ' + error.message);
-    }
-
-
-    function calculateDistance(userLat, userLon, targetLat, targetLon) {
-      // Implement the haversine formula here to calculate the distance
-      // between the user and the target coordinates. You can find code examples online.
-      // Return the calculated distance in meters.
-    }
-
-
-    function calculateAngle(userLat, userLon, targetLat, targetLon) {
-      // Implement trigonometry calculations here to determine the angle
-      // between the user's facing direction and the direction towards the target.
-      // Return the calculated angle in degrees.
-    }
-
-
-    checkLocationPermission();
-  </script>
-</body>
+  </body>
 </html>
