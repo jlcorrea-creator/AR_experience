@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AR.js Location-Based Example</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { display: none; }
+  </style>
+</head>
+<body>
+  <a-scene embedded arjs="sourceType: webcam;">
+    <!-- Black box for the first location -->
+    <a-box id="box1" position="0 0.5 0" color="black" 
+           animation="property: rotation; to: 0 360 0; dur: 10000; loop: true;">
+    </a-box>
+    
+    <!-- Black box for the second location -->
+    <a-box id="box2" position="0 0.5 0" color="black" 
+           animation="property: rotation; to: 0 360 0; dur: 10000; loop: true;">
+    </a-box>
+
+    <!-- Black box for the third location -->
+    <a-box id="box3" position="0 0.5 0" color="black" 
+           animation="property: rotation; to: 0 360 0; dur: 10000; loop: true;">
+    </a-box>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    // Target coordinates for multiple locations
+    const locations = [
+      { lat: 14.5411, lon: 121.0157, id: 'box1' }, // First location
+      { lat: 14.5488, lon: 121.0062, id: 'box2' }, // Second location
+      { lat: 14.549943, lon: 121.006204, id: 'box3' }  // Third location
+    ];
+
+    function checkLocationPermission() {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          successCallback,
+          errorCallback,
+          { enableHighAccuracy: true }
+        );
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
+
+    function successCallback(position) {
+      const userLatitude = position.coords.latitude;
+      const userLongitude = position.coords.longitude;
+
+      locations.forEach(location => {
+        const distance = calculateDistance(userLatitude, userLongitude, location.lat, location.lon);
+        const angle = calculateAngle(userLatitude, userLongitude, location.lat, location.lon);
+
+        // Update the position of each box based on its respective location
+        const boxEntity = document.getElementById(location.id);
+        boxEntity.setAttribute('position', `${distance} 0.5 0`);
+        boxEntity.setAttribute('rotation', `0 ${angle} 0`);
+      });
+    }
+
+    function errorCallback(error) {
+      alert('Error accessing location: ' + error.message);
+    }
+
+    // Haversine formula for distance calculation
+    function calculateDistance(userLat, userLon, targetLat, targetLon) {
+      const R = 6371000; // Earth radius in meters
+      const lat1 = userLat * Math.PI / 180;
+      const lat2 = targetLat * Math.PI / 180;
+      const deltaLat = (targetLat - userLat) * Math.PI / 180;
+      const deltaLon = (targetLon - userLon) * Math.PI / 180;
+
+      const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return R * c; // Distance in meters
+    }
+
+    // Angle calculation
+    function calculateAngle(userLat, userLon, targetLat, targetLon) {
+      const y = Math.sin((targetLon - userLon) * Math.PI / 180) * Math.cos(targetLat * Math.PI / 180);
+      const x = Math.cos(userLat * Math.PI / 180) * Math.sin(targetLat * Math.PI / 180) -
+                Math.sin(userLat * Math.PI / 180) * Math.cos(targetLat * Math.PI / 180) * Math.cos((targetLon - userLon) * Math.PI / 180);
+      return Math.atan2(y, x) * 180 / Math.PI; // Angle in degrees
+    }
+
+    checkLocationPermission(); // Check for location permission on load
+  </script>
+</body>
+</html>
